@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 type FooterSettings = {
   siteName?: string;
@@ -24,9 +25,18 @@ export function Footer({ settings }: { settings: FooterSettings }) {
     <footer className="mt-20 bg-brand-navy text-gray-300">
       <div className="container-page grid gap-8 py-12 md:grid-cols-3">
         <div>
-          <p className="font-semibold text-white">{settings.siteName || 'DXP Catalyst'}</p>
+          {/* White logo on the dark navy footer (design tokens §6). */}
+          <Link href="/" className="inline-block">
+            <Image
+              src="/images/logos/DXP Catalyst Logo White.png"
+              alt={settings.siteName || 'DXP Catalyst'}
+              width={120}
+              height={34}
+              className="h-8 w-auto"
+            />
+          </Link>
           {settings.footerTagline && (
-            <p className="mt-2 max-w-xs text-sm text-gray-400">{settings.footerTagline}</p>
+            <p className="mt-3 max-w-xs text-sm text-gray-400">{settings.footerTagline}</p>
           )}
         </div>
 

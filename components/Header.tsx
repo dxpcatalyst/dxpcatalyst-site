@@ -29,13 +29,17 @@ export function Header({ settings }: { settings: SiteSettings }) {
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
       <nav className="container-page flex h-[72px] items-center justify-between" aria-label="Primary">
-        {/* Logo */}
+        {/* Logo — full-color mark on the light nav. Falls back to the Sanity
+            logo if one is set in siteSettings, else the static brand asset. */}
         <Link href="/" className="flex items-center gap-2 font-semibold text-brand">
-          {settings.logoUrl ? (
-            <Image src={settings.logoUrl} alt={settings.siteName || 'DXP Catalyst'} width={140} height={32} className="h-8 w-auto" priority />
-          ) : (
-            <span className="text-lg">{settings.siteName || 'DXP Catalyst'}</span>
-          )}
+          <Image
+            src={settings.logoUrl || '/images/logos/DXP Catalyst Black.png'}
+            alt={settings.siteName || 'DXP Catalyst'}
+            width={140}
+            height={40}
+            className="h-9 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}
