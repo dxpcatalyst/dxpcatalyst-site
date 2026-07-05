@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 type FooterSettings = {
   siteName?: string;
@@ -25,15 +24,11 @@ export function Footer({ settings }: { settings: FooterSettings }) {
     <footer className="mt-20 bg-brand-navy text-gray-300">
       <div className="container-page grid gap-8 py-12 md:grid-cols-3">
         <div>
-          {/* White logo on the dark navy footer (design tokens §6). */}
-          <Link href="/" className="inline-block">
-            <Image
-              src="/images/logos/DXP Catalyst Logo White.png"
-              alt={settings.siteName || 'DXP Catalyst'}
-              width={120}
-              height={34}
-              className="h-8 w-auto"
-            />
+          {/* No transparent reversed (white) logo asset yet, so use the site
+              name as clean white text on the navy footer. Swap in an <Image>
+              once a transparent white logo is available. */}
+          <Link href="/" className="inline-block text-lg font-semibold text-white">
+            {settings.siteName || 'DXP Catalyst'}
           </Link>
           {settings.footerTagline && (
             <p className="mt-3 max-w-xs text-sm text-gray-400">{settings.footerTagline}</p>
