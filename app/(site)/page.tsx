@@ -63,14 +63,14 @@ export default async function HomePageRoute() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-gradient-to-b from-gray-50 to-white">
+      {/* Hero — dark navy (design tokens §1) */}
+      <section className="bg-brand-navy">
         <div className="container-page py-20 text-center md:py-28">
-          <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
+          <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-white md:text-5xl">
             {home.heroHeadline || 'Modernize your digital ecosystem'}
           </h1>
           {home.heroSubheadline && (
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">{home.heroSubheadline}</p>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-300">{home.heroSubheadline}</p>
           )}
           <div className="mt-8">
             <Link href={home.heroCtaUrl || '/book'} className="btn-primary">
