@@ -20,12 +20,17 @@ export function buildMetadata({
   pageTitle: string;
   path?: string;
 }): Metadata {
-  const title = seo?.metaTitle?.trim() || `${pageTitle} | ${SITE_NAME}`;
+  // Compute the full title. Avoid duplicating the brand when the page title is
+  // already the site name (homepage). Return it as `absolute` so the root
+  // layout's title.template ("%s | DXP Catalyst") does not re-wrap it.
+  const title =
+    seo?.metaTitle?.trim() ||
+    (pageTitle === SITE_NAME ? SITE_NAME : `${pageTitle} | ${SITE_NAME}`);
   const description = seo?.metaDescription?.trim() || undefined;
   const url = new URL(path, SITE_URL).toString();
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {

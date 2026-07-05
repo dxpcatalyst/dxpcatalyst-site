@@ -24,9 +24,9 @@ export function Footer({ settings }: { settings: FooterSettings }) {
     <footer className="mt-20 bg-brand-navy text-gray-300">
       <div className="container-page grid gap-8 py-12 md:grid-cols-3">
         <div>
-          {/* No transparent reversed (white) logo asset yet, so use the site
-              name as clean white text on the navy footer. Swap in an <Image>
-              once a transparent white logo is available. */}
+          {/* Site name as clean white text on the navy footer. (The available
+              reversed logo has a baked black background, so it can't sit
+              transparently on navy.) */}
           <Link href="/" className="inline-block text-lg font-semibold text-white">
             {settings.siteName || 'DXP Catalyst'}
           </Link>
