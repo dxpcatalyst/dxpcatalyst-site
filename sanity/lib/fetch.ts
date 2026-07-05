@@ -18,12 +18,19 @@ export async function sanityFetch<T>({
   tags?: string[];
 }): Promise<T | null> {
   try {
-    return await client.fetch<T>(query, params, {
-      next: {
-        revalidate: tags.length ? false : revalidate,
-        tags,
-      },
-    });
+    // In development, always fetch fresh so content edits appear on refresh
+    // (no need to clear .next). In production, use tag-based ISR: pages hold
+    // their cache until the Sanity publish webhook purges the tag.
+    const fetchOptions =
+      process.env.NODE_ENV === 'development'
+        ? ({ cache: 'no-store' } as const)
+        : {
+            next: {
+              revalidate: tags.length ? false : revalidate,
+              tags,
+            },
+          };
+    return await client.fetch<T>(query, params, fetchOptions);
   } catch (err) {
     // Stay resilient: a Sanity outage (or an unconfigured project during an
     // early build) should degrade to empty content, not crash the whole page.
