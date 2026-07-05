@@ -28,7 +28,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
-      <nav className="container-page flex h-16 items-center justify-between" aria-label="Primary">
+      <nav className="container-page flex h-[72px] items-center justify-between" aria-label="Primary">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-semibold text-brand">
           {settings.logoUrl ? (

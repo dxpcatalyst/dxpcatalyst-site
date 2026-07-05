@@ -107,18 +107,18 @@ export default async function ServicePageRoute({ params }: { params: { slug: str
 
       {/* Two-track callout */}
       {page.twoTrackCallout?.headline && (
-        <section className="bg-brand-dark text-white">
+        <section className="bg-brand-tint">
           <div className="container-page py-14">
-            <h2 className="text-2xl font-semibold">{page.twoTrackCallout.headline}</h2>
+            <h2 className="text-2xl font-semibold text-brand-charcoal">{page.twoTrackCallout.headline}</h2>
             {page.twoTrackCallout.body && (
-              <p className="mt-3 max-w-3xl text-gray-100">{page.twoTrackCallout.body}</p>
+              <p className="mt-3 max-w-narrow text-gray-mid">{page.twoTrackCallout.body}</p>
             )}
             {page.twoTrackCallout.articleUrl && (
               <a
                 href={page.twoTrackCallout.articleUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-block font-medium text-white underline"
+                className="mt-4 inline-block font-medium text-brand underline"
               >
                 Read the supporting article →
               </a>

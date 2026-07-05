@@ -12,12 +12,12 @@ export function Testimonials({ items }: { items?: Testimonial[] | null }) {
     <section className="container-page py-16">
       <div className="grid gap-8 md:grid-cols-2">
         {items.map((t) => (
-          <figure key={t._id} className="rounded-lg border border-gray-200 bg-white p-8">
-            <blockquote className="text-lg leading-relaxed text-gray-800">
+          <figure key={t._id} className="rounded-lg bg-brand-tint p-8">
+            <blockquote className="text-lg font-medium leading-relaxed text-brand-charcoal">
               “{t.quote}”
             </blockquote>
             {t.attribution && (
-              <figcaption className="mt-4 text-sm font-medium text-gray-500">
+              <figcaption className="mt-4 text-sm text-gray-mid">
                 — {t.attribution}
               </figcaption>
             )}

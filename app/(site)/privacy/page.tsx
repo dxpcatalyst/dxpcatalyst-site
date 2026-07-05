@@ -29,7 +29,7 @@ export default async function PrivacyPageRoute() {
 
   return (
     <article className="container-page py-16">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-narrow">
         <h1 className="text-4xl font-bold tracking-tight text-gray-900">
           {page.title || 'Privacy Policy'}
         </h1>

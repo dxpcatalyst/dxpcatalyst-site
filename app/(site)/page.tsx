@@ -141,15 +141,17 @@ export default async function HomePageRoute() {
       {/* Newsletter strip */}
       <NewsletterCta headline={home.newsletterStripHeadline} signupUrl={home.newsletterSignupUrl} variant="strip" />
 
-      {/* CTA banner */}
-      <section className="container-page py-20 text-center">
-        <h2 className="text-2xl font-semibold text-gray-900">
-          {home.ctaBannerText || 'Ready to talk?'}
-        </h2>
-        <div className="mt-6">
-          <Link href="/book" className="btn-primary">
-            {home.ctaBannerCtaLabel || 'Book a Consultation'}
-          </Link>
+      {/* CTA banner — dark navy band */}
+      <section className="bg-brand-navy">
+        <div className="container-page py-20 text-center">
+          <h2 className="text-2xl font-bold text-white">
+            {home.ctaBannerText || 'Ready to talk?'}
+          </h2>
+          <div className="mt-6">
+            <Link href="/book" className="btn-primary">
+              {home.ctaBannerCtaLabel || 'Book a Consultation'}
+            </Link>
+          </div>
         </div>
       </section>
     </>

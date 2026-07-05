@@ -55,7 +55,7 @@ export default async function CaseStudyRoute({ params }: { params: { slug: strin
 
   return (
     <article className="container-page py-16">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-narrow">
         <p className="text-sm font-semibold uppercase tracking-wide text-brand">Case study</p>
         <h1 className="mt-2 text-4xl font-bold tracking-tight text-gray-900">{cs.title}</h1>
         <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-600">

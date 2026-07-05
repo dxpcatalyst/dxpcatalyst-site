@@ -2,13 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --max-width: 72rem;
-}
-
 @layer base {
   body {
-    @apply bg-white text-gray-900 antialiased;
+    @apply bg-white text-brand-charcoal antialiased;
   }
   a {
     @apply transition-colors;
@@ -17,7 +13,8 @@
 
 @layer components {
   .container-page {
-    @apply mx-auto w-full max-w-[var(--max-width)] px-4 sm:px-6 lg:px-8;
+    /* 1200px max, 24px mobile / 48px desktop horizontal padding (design tokens §4) */
+    @apply mx-auto w-full max-w-content px-6 md:px-12;
   }
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-md bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2;

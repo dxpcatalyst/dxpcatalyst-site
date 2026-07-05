@@ -63,7 +63,7 @@ export default async function InsightPostRoute({ params }: { params: { slug: str
 
   return (
     <article className="container-page py-16">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-narrow">
         <div className="flex items-center gap-3 text-sm text-gray-500">
           {dateLabel && <time>{dateLabel}</time>}
           {post.author?.name && <span>· {post.author.name}</span>}

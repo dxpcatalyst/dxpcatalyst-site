@@ -21,12 +21,12 @@ const FOOTER_LINKS = [
 export function Footer({ settings }: { settings: FooterSettings }) {
   const year = new Date().getFullYear();
   return (
-    <footer className="mt-20 border-t border-gray-200 bg-gray-50">
+    <footer className="mt-20 bg-brand-navy text-gray-300">
       <div className="container-page grid gap-8 py-12 md:grid-cols-3">
         <div>
-          <p className="font-semibold text-brand">{settings.siteName || 'DXP Catalyst'}</p>
+          <p className="font-semibold text-white">{settings.siteName || 'DXP Catalyst'}</p>
           {settings.footerTagline && (
-            <p className="mt-2 max-w-xs text-sm text-gray-600">{settings.footerTagline}</p>
+            <p className="mt-2 max-w-xs text-sm text-gray-400">{settings.footerTagline}</p>
           )}
         </div>
 
@@ -34,7 +34,7 @@ export function Footer({ settings }: { settings: FooterSettings }) {
           <ul className="grid grid-cols-2 gap-2 text-sm">
             {FOOTER_LINKS.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="text-gray-700 hover:text-brand">
+                <Link href={l.href} className="text-gray-300 hover:text-white">
                   {l.label}
                 </Link>
               </li>
@@ -42,17 +42,17 @@ export function Footer({ settings }: { settings: FooterSettings }) {
           </ul>
         </nav>
 
-        <div className="text-sm text-gray-700">
+        <div className="text-sm text-gray-300">
           {settings.email && (
             <p>
-              <a href={`mailto:${settings.email}`} className="hover:text-brand">
+              <a href={`mailto:${settings.email}`} className="hover:text-white">
                 {settings.email}
               </a>
             </p>
           )}
           {settings.phone && (
             <p className="mt-1">
-              <a href={`tel:${settings.phone}`} className="hover:text-brand">
+              <a href={`tel:${settings.phone}`} className="hover:text-white">
                 {settings.phone}
               </a>
             </p>
@@ -63,7 +63,7 @@ export function Footer({ settings }: { settings: FooterSettings }) {
                 href={settings.linkedInUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-brand"
+                className="hover:text-white"
               >
                 LinkedIn
               </a>
@@ -71,8 +71,8 @@ export function Footer({ settings }: { settings: FooterSettings }) {
           )}
         </div>
       </div>
-      <div className="border-t border-gray-200">
-        <p className="container-page py-4 text-xs text-gray-500">
+      <div className="border-t border-white/10">
+        <p className="container-page py-4 text-xs text-gray-400">
           © {year} {settings.siteName || 'DXP Catalyst'}. All rights reserved.
         </p>
       </div>

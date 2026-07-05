@@ -55,15 +55,15 @@ export default async function WorkPageRoute() {
               <Link
                 key={cs._id}
                 href={`/work/${cs.slug}`}
-                className="group rounded-lg border border-gray-200 bg-white p-6 transition hover:border-brand hover:shadow-sm"
+                className="group rounded-lg border-l-4 border-brand bg-gray-light p-6 transition hover:shadow-sm"
               >
                 {tag && (
                   <span className="text-xs font-semibold uppercase tracking-wide text-brand">{tag}</span>
                 )}
-                <h2 className="mt-1 text-lg font-semibold text-gray-900 group-hover:text-brand">
+                <h2 className="mt-1 text-lg font-semibold text-brand-charcoal group-hover:text-brand">
                   {client}
                 </h2>
-                {cs.industry && <p className="mt-1 text-sm text-gray-500">{cs.industry}</p>}
+                {cs.industry && <p className="mt-1 text-sm text-gray-mid">{cs.industry}</p>}
                 <span className="mt-3 inline-block text-sm font-medium text-brand">View case study →</span>
               </Link>
             );
