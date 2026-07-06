@@ -26,10 +26,71 @@ export async function fetchBeehiivPosts(
     });
     if (!res.ok) return [];
     const html = await res.text();
-    return parseBeehiivHtml(html, subdomainUrl);
+    const posts = parseBeehiivHtml(html, subdomainUrl);
+    await enrichExcerpts(posts);
+    return posts;
   } catch {
     return [];
   }
+}
+
+const UA = 'dxpcatalyst-site/1.0 (+https://dxpcatalyst.com)';
+
+// A card blurb is only useful if it actually says something. Beehiiv issues here
+// share a generic subtitle ("The DXP Digest"), so treat short/label-like text as
+// non-descriptive and fall back to a preview pulled from the post body.
+function isDescriptive(s: string): boolean {
+  return !!s && s.trim().length > 40 && /\s/.test(s.trim());
+}
+
+// For posts without a descriptive subtitle, fetch the post and use the first
+// substantive paragraph of the body as the card blurb — the reader's reason to
+// click. Best-effort and parallel; failures just leave the blurb empty.
+async function enrichExcerpts(posts: FeedPost[]): Promise<void> {
+  await Promise.all(
+    posts.map(async (p) => {
+      if (p.source !== 'beehiiv' || isDescriptive(p.excerpt)) return;
+      p.excerpt = await fetchPostPreview(p.url);
+    })
+  );
+}
+
+async function fetchPostPreview(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      next: { revalidate: 3600 },
+      headers: { 'user-agent': UA },
+    });
+    if (!res.ok) return '';
+    return extractPostPreview(await res.text());
+  } catch {
+    return '';
+  }
+}
+
+// Pull the first real prose paragraph from the rendered post body, skipping
+// style/script noise and the boilerplate intro line.
+function extractPostPreview(html: string): string {
+  const start = html.search(/id=["']content-blocks["']/i);
+  const body = start >= 0 ? html.slice(start) : html;
+  const pRe = /<p[^>]*>([\s\S]*?)<\/p>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = pRe.exec(body)) !== null) {
+    const t = clean(m[1]);
+    if (t.length < 60) continue;
+    if (/[{}]|line-height|var\s|function\s*\(|undefined|@media/.test(t)) continue;
+    if (/^this edition of the dxp catalyst update/i.test(t)) continue;
+    return truncate(t, 240);
+  }
+  return '';
+}
+
+// Truncate to a whole word near the limit and append an ellipsis.
+function truncate(s: string, max: number): string {
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${(lastSpace > 40 ? cut.slice(0, lastSpace) : cut).replace(/[.,;:\s]+$/, '')}…`;
 }
 
 // Best-effort parse. Beehiiv embeds post metadata as JSON-LD and/or Next.js
@@ -161,7 +222,18 @@ function parseCard(inner: string): {
     title = title.slice(category.length).replace(/^[\s·•|:–—-]+/, '').trim();
   }
 
-  return { title, publishedAt, category, excerpt: '' };
+  // Subtitle: the descriptive <p> Beehiiv renders under the card heading. The
+  // captured text repeats the title in front of the real subtitle, so peel the
+  // title off. Often still generic (e.g. the newsletter section name), in which
+  // case it is replaced later by a preview pulled from the post body.
+  let excerpt = '';
+  const sub = inner.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+  if (sub) excerpt = clean(sub[1]);
+  if (excerpt && title && excerpt.startsWith(title)) {
+    excerpt = excerpt.slice(title.length).replace(/^[\s·•|:–—-]+/, '').trim();
+  }
+
+  return { title, publishedAt, category, excerpt };
 }
 
 function collectFromLd(data: any, posts: FeedPost[]) {
