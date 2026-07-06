@@ -43,6 +43,7 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       // --- Multi-document collections ---
       S.documentTypeListItem('servicePage').title('Service Pages'),
+      S.documentTypeListItem('frameworkPage').title('Framework Pages'),
       S.documentTypeListItem('caseStudy').title('Case Studies'),
       S.documentTypeListItem('insightPost').title('Insight Posts'),
       S.documentTypeListItem('teamMember').title('Team Members'),

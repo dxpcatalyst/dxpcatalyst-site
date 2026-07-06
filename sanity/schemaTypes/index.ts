@@ -16,6 +16,7 @@ import { legalPage } from './documents/legalPage';
 
 // Multi documents
 import { servicePage } from './documents/servicePage';
+import { frameworkPage } from './documents/frameworkPage';
 import { teamMember } from './documents/teamMember';
 import { testimonial } from './documents/testimonial';
 import { insightPost } from './documents/insightPost';
@@ -36,6 +37,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   legalPage,
   // multi
   servicePage,
+  frameworkPage,
   teamMember,
   testimonial,
   insightPost,

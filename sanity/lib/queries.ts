@@ -52,6 +52,18 @@ export const servicePageBySlugQuery = groq`
   }
 `;
 
+export const frameworkPageSlugsQuery = groq`
+  *[_type == "frameworkPage" && defined(slug.current)]{ "slug": slug.current }
+`;
+
+export const frameworkPageBySlugQuery = groq`
+  *[_type == "frameworkPage" && slug.current == $slug][0]{
+    title, "slug": slug.current, intro,
+    sections[]{ heading, body },
+    ctaLabel, ${seoFields}
+  }
+`;
+
 export const insightsPageQuery = groq`
   *[_type == "insightsPage"][0]{
     headline, introText, beehiivSubdomainUrl, newsletterSignupUrl, showSanityPosts,
