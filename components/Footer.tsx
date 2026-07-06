@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SocialLinks } from './SocialLinks';
 
 type FooterSettings = {
   siteName?: string;
@@ -6,6 +7,7 @@ type FooterSettings = {
   email?: string;
   phone?: string;
   linkedInUrl?: string;
+  instagramUrl?: string;
 };
 
 const FOOTER_LINKS = [
@@ -62,18 +64,12 @@ export function Footer({ settings }: { settings: FooterSettings }) {
               </a>
             </p>
           )}
-          {settings.linkedInUrl && (
-            <p className="mt-3">
-              <a
-                href={settings.linkedInUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white"
-              >
-                LinkedIn
-              </a>
-            </p>
-          )}
+          <SocialLinks
+            linkedInUrl={settings.linkedInUrl}
+            instagramUrl={settings.instagramUrl}
+            className="mt-4"
+            linkClassName="text-gray-400 transition hover:text-white"
+          />
         </div>
       </div>
       <div className="border-t border-white/10">

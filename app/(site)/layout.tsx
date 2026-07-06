@@ -13,6 +13,7 @@ type SiteSettings = {
   email?: string;
   phone?: string;
   linkedInUrl?: string;
+  instagramUrl?: string;
 };
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -33,6 +34,8 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           navCtaLabel: settings.navCtaLabel,
           navCtaUrl: settings.navCtaUrl,
           logoUrl,
+          linkedInUrl: settings.linkedInUrl,
+          instagramUrl: settings.instagramUrl,
         }}
       />
       <main id="main" className="min-h-[60vh]">
@@ -45,6 +48,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           email: settings.email,
           phone: settings.phone,
           linkedInUrl: settings.linkedInUrl,
+          instagramUrl: settings.instagramUrl,
         }}
       />
     </>

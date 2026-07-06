@@ -4,7 +4,7 @@ const seoFields = `seo { metaTitle, metaDescription }`;
 
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0]{
-    siteName, logoLight, logoDark, phone, email, linkedInUrl,
+    siteName, logoLight, logoDark, phone, email, linkedInUrl, instagramUrl,
     navCtaLabel, navCtaUrl, footerTagline
   }
 `;

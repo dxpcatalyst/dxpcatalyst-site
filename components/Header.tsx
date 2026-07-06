@@ -5,12 +5,15 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { NAV_ITEMS } from './navConfig';
+import { SocialLinks } from './SocialLinks';
 
 type SiteSettings = {
   siteName?: string;
   navCtaLabel?: string;
   navCtaUrl?: string;
   logoUrl?: string | null;
+  linkedInUrl?: string;
+  instagramUrl?: string;
 };
 
 function isActive(pathname: string, href: string): boolean {
@@ -94,8 +97,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
           })}
         </ul>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:block">
+        {/* Desktop social icons + CTA */}
+        <div className="hidden items-center gap-4 md:flex">
+          <SocialLinks linkedInUrl={settings.linkedInUrl} instagramUrl={settings.instagramUrl} />
           <Link href={ctaUrl} className="btn-primary">
             {ctaLabel}
           </Link>
@@ -163,6 +167,14 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 {ctaLabel}
               </Link>
             </li>
+            {(settings.linkedInUrl || settings.instagramUrl) && (
+              <li className="pt-3">
+                <SocialLinks
+                  linkedInUrl={settings.linkedInUrl}
+                  instagramUrl={settings.instagramUrl}
+                />
+              </li>
+            )}
           </ul>
         </div>
       )}
