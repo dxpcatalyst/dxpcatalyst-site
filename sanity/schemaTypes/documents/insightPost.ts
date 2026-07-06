@@ -27,6 +27,20 @@ export const insightPost = defineType({
     { name: 'body', title: 'Body', type: 'blockContent', group: 'content' },
     { name: 'tags', title: 'Tags', type: 'array', of: [{ type: 'string' }], options: { layout: 'tags' }, group: 'content' },
     { name: 'featuredImage', title: 'Featured image', type: 'image', options: { hotspot: true }, fields: [{ name: 'alt', type: 'string', title: 'Alt text' }], group: 'content' },
+    {
+      name: 'originalUrl',
+      title: 'Originally published at (URL)',
+      type: 'url',
+      description: 'If this article first appeared elsewhere, the original URL. Shown as a credit at the bottom of the article.',
+      group: 'content',
+    },
+    {
+      name: 'originalSourceName',
+      title: 'Original publication name',
+      type: 'string',
+      description: "Publication name shown in the credit, e.g. 'CMS Critic'. Falls back to the URL's domain.",
+      group: 'content',
+    },
     { name: 'seo', title: 'SEO', type: 'seo', group: 'seo' },
   ],
   orderings: [

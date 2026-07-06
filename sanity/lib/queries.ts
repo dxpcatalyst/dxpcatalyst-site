@@ -34,6 +34,14 @@ export const servicePageSlugsQuery = groq`
   *[_type == "servicePage" && defined(slug.current)]{ "slug": slug.current }
 `;
 
+// Short offering cards for the homepage services grid, ordered by title
+// (DXP Advisory before HubSpot and Salesforce Advisory).
+export const serviceOfferingsQuery = groq`
+  *[_type == "servicePage" && defined(slug.current)] | order(title asc){
+    title, "slug": slug.current, summary
+  }
+`;
+
 export const servicePageBySlugQuery = groq`
   *[_type == "servicePage" && slug.current == $slug][0]{
     title, "slug": slug.current, heroText,
@@ -65,6 +73,7 @@ export const insightPostSlugsQuery = groq`
 export const insightPostBySlugQuery = groq`
   *[_type == "insightPost" && slug.current == $slug][0]{
     title, "slug": slug.current, publishedAt, summary, body, tags, featuredImage,
+    originalUrl, originalSourceName,
     "author": author->{ name, title, headshot, linkedInUrl },
     ${seoFields}
   }

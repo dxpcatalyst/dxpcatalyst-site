@@ -15,9 +15,23 @@ type InsightPost = {
   body?: any;
   tags?: string[];
   featuredImage?: any;
+  originalUrl?: string;
+  originalSourceName?: string;
   author?: { name?: string; title?: string };
   seo?: { metaTitle?: string; metaDescription?: string };
 };
+
+// Friendly label for the original-source link: the configured name, else the
+// URL's domain (without "www.").
+function sourceLabel(url?: string, name?: string): string {
+  if (name) return name;
+  if (!url) return '';
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+}
 
 export async function generateStaticParams() {
   const slugs = await sanityFetch<{ slug: string }[]>({
@@ -70,6 +84,20 @@ export default async function InsightPostRoute({ params }: { params: { slug: str
         </div>
         <h1 className="mt-2 text-4xl font-bold tracking-tight text-gray-900">{post.title}</h1>
         {post.summary && <p className="mt-4 text-lg text-gray-600">{post.summary}</p>}
+        {post.originalUrl && (
+          <p className="mt-3 text-sm text-gray-500">
+            First published on{' '}
+            <a
+              href={post.originalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand hover:underline"
+            >
+              {sourceLabel(post.originalUrl, post.originalSourceName)}
+            </a>
+            .
+          </p>
+        )}
 
         {post.featuredImage && (
           <Image
@@ -86,6 +114,13 @@ export default async function InsightPostRoute({ params }: { params: { slug: str
           <div className="mt-8">
             <PortableText value={post.body} />
           </div>
+        )}
+
+        {/* Byline */}
+        {post.author?.name && (
+          <footer className="mt-12 border-t border-gray-200 pt-6 text-sm text-gray-500">
+            Written by {post.author.name}, DXP Catalyst.
+          </footer>
         )}
       </div>
     </article>

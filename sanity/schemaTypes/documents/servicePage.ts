@@ -22,6 +22,14 @@ export const servicePage = defineType({
       options: { source: 'title', maxLength: 96 },
       validation: (r) => r.required(),
     },
+    {
+      name: 'summary',
+      title: 'Summary',
+      type: 'text',
+      rows: 2,
+      description: 'Short one-line overview shown on the homepage services grid.',
+      group: 'content',
+    },
     { name: 'heroText', title: 'Hero', type: 'blockContent', description: 'Clear statement of what this offering is.', group: 'content' },
     {
       name: 'sections',

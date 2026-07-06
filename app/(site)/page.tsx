@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { sanityFetch } from '@/sanity/lib/fetch';
-import { homePageQuery, insightPostsQuery } from '@/sanity/lib/queries';
+import { homePageQuery, insightPostsQuery, serviceOfferingsQuery } from '@/sanity/lib/queries';
 import { buildMetadata } from '@/lib/seo';
 import { PortableText } from '@/components/PortableText';
 import { Testimonials, type Testimonial } from '@/components/Testimonials';
@@ -25,20 +25,7 @@ type HomePage = {
   seo?: { metaTitle?: string; metaDescription?: string };
 };
 
-const OFFERINGS = [
-  {
-    title: 'DXP Advisory',
-    href: '/services/dxp-advisory',
-    summary:
-      'Platform advisory, selection, and post-selection architecture and roadmap — a connected progression from ecosystem assessment to the path forward.',
-  },
-  {
-    title: 'HubSpot and Salesforce Advisory',
-    href: '/services/hubspot-salesforce',
-    summary:
-      'Full ecosystem advisory, implementation, and migration across HubSpot and Salesforce — Sales Hub, Marketing Hub, CRM, SFMC, Data Cloud, and Einstein.',
-  },
-];
+type Offering = { title?: string; slug?: string; summary?: string };
 
 export async function generateMetadata(): Promise<Metadata> {
   const home = await sanityFetch<HomePage>({ query: homePageQuery, tags: ['homePage'] });
@@ -47,6 +34,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePageRoute() {
   const home = (await sanityFetch<HomePage>({ query: homePageQuery, tags: ['homePage'] })) || {};
+  const offerings =
+    (await sanityFetch<Offering[]>({ query: serviceOfferingsQuery, tags: ['servicePage'] })) || [];
 
   let previewPosts: FeedPost[] = [];
   if (home.showInsightsPreview) {
@@ -90,22 +79,24 @@ export default async function HomePageRoute() {
         </section>
       )}
 
-      {/* Two offering cards */}
-      <section className="container-page py-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          {OFFERINGS.map((o) => (
-            <Link
-              key={o.href}
-              href={o.href}
-              className="group rounded-xl border border-gray-200 bg-white p-8 transition hover:border-brand hover:shadow-md"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 group-hover:text-brand">{o.title}</h2>
-              <p className="mt-3 text-gray-600">{o.summary}</p>
-              <span className="mt-4 inline-block text-sm font-medium text-brand">Learn more →</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* Offering cards — sourced from the servicePage documents in Sanity */}
+      {offerings.length > 0 && (
+        <section className="container-page py-8">
+          <div className="grid gap-6 md:grid-cols-2">
+            {offerings.map((o) => (
+              <Link
+                key={o.slug}
+                href={`/services/${o.slug}`}
+                className="group rounded-xl border border-gray-200 bg-white p-8 transition hover:border-brand hover:shadow-md"
+              >
+                <h2 className="text-xl font-semibold text-gray-900 group-hover:text-brand">{o.title}</h2>
+                {o.summary && <p className="mt-3 text-gray-600">{o.summary}</p>}
+                <span className="mt-4 inline-block text-sm font-medium text-brand">Learn more →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* How we work */}
       {home.howWeWorkText && (
