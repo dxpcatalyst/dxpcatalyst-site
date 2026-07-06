@@ -11,11 +11,7 @@ type ServicePage = {
   title?: string;
   slug?: string;
   heroText?: any;
-  progressionText?: any;
-  progressionPhases?: { phase?: string; description?: string }[];
-  twoTrackCallout?: { headline?: string; body?: string; articleUrl?: string };
-  engagementModelText?: any;
-  whoThisIsForText?: string;
+  sections?: { heading?: string; body?: any }[];
   representativeWork?: { label?: string; description?: string; url?: string }[];
   testimonials?: Testimonial[];
   ctaLabel?: string;
@@ -82,67 +78,22 @@ export default async function ServicePageRoute({ params }: { params: { slug: str
         </div>
       </section>
 
-      {/* Progression */}
-      {(page.progressionText || (page.progressionPhases && page.progressionPhases.length > 0)) && (
+      {/* Content sections — the uniform body shared by every service page. */}
+      {page.sections && page.sections.length > 0 && (
         <section className="container-page py-16">
-          <h2 className="text-2xl font-semibold text-gray-900">How the work flows</h2>
-          {page.progressionText && (
-            <div className="mt-4 max-w-3xl">
-              <PortableText value={page.progressionText} />
-            </div>
-          )}
-          {page.progressionPhases && page.progressionPhases.length > 0 && (
-            <ol className="mt-8 grid gap-6 md:grid-cols-3">
-              {page.progressionPhases.map((p, i) => (
-                <li key={i} className="rounded-lg border border-gray-200 p-6">
-                  <span className="text-sm font-semibold text-brand">Phase {i + 1}</span>
-                  <h3 className="mt-1 font-semibold text-gray-900">{p.phase}</h3>
-                  <p className="mt-2 text-sm text-gray-600">{p.description}</p>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
-      )}
-
-      {/* Two-track callout */}
-      {page.twoTrackCallout?.headline && (
-        <section className="bg-brand-tint">
-          <div className="container-page py-14">
-            <h2 className="text-2xl font-semibold text-brand-charcoal">{page.twoTrackCallout.headline}</h2>
-            {page.twoTrackCallout.body && (
-              <p className="mt-3 max-w-narrow text-gray-mid">{page.twoTrackCallout.body}</p>
-            )}
-            {page.twoTrackCallout.articleUrl && (
-              <a
-                href={page.twoTrackCallout.articleUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-block font-medium text-brand underline"
-              >
-                Read the supporting article →
-              </a>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* Engagement model */}
-      {page.engagementModelText && (
-        <section className="container-page py-16">
-          <h2 className="text-2xl font-semibold text-gray-900">Engagement model</h2>
-          <div className="mt-4 max-w-3xl">
-            <PortableText value={page.engagementModelText} />
-          </div>
-        </section>
-      )}
-
-      {/* Who this is for */}
-      {page.whoThisIsForText && (
-        <section className="bg-gray-50">
-          <div className="container-page py-12">
-            <h2 className="text-xl font-semibold text-gray-900">Who this is for</h2>
-            <p className="mt-3 max-w-3xl text-gray-700">{page.whoThisIsForText}</p>
+          <div className="max-w-3xl space-y-12">
+            {page.sections.map((s, i) => (
+              <div key={i}>
+                {s.heading && (
+                  <h2 className="text-2xl font-semibold text-gray-900">{s.heading}</h2>
+                )}
+                {s.body && (
+                  <div className="mt-4">
+                    <PortableText value={s.body} />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </section>
       )}

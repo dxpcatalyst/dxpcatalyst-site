@@ -24,42 +24,23 @@ export const servicePage = defineType({
     },
     { name: 'heroText', title: 'Hero', type: 'blockContent', description: 'Clear statement of what this offering is.', group: 'content' },
     {
-      name: 'progressionText',
-      title: 'Progression',
-      type: 'blockContent',
-      description: 'How the work flows as a connected process, not a menu of services.',
-      group: 'content',
-    },
-    {
-      name: 'progressionPhases',
-      title: 'Progression phases',
+      name: 'sections',
+      title: 'Content sections',
       type: 'array',
       group: 'content',
+      description:
+        'The body of the page: an ordered list of headed sections (capabilities, how the work flows, engagement model, who it is for, etc.). Both service pages share this structure and differ only in the sections they use.',
       of: [
         {
           type: 'object',
           fields: [
-            { name: 'phase', title: 'Phase', type: 'string' },
-            { name: 'description', title: 'Description', type: 'string' },
+            { name: 'heading', title: 'Heading', type: 'string' },
+            { name: 'body', title: 'Body', type: 'blockContent' },
           ],
-          preview: { select: { title: 'phase', subtitle: 'description' } },
+          preview: { select: { title: 'heading' } },
         },
       ],
     },
-    {
-      name: 'twoTrackCallout',
-      title: 'Two-track callout',
-      type: 'object',
-      group: 'content',
-      description: 'e.g. composable vs. pre-composed framework, with supporting article.',
-      fields: [
-        { name: 'headline', title: 'Headline', type: 'string' },
-        { name: 'body', title: 'Body', type: 'text', rows: 3 },
-        { name: 'articleUrl', title: 'Article URL', type: 'url' },
-      ],
-    },
-    { name: 'engagementModelText', title: 'Engagement model', type: 'blockContent', group: 'content' },
-    { name: 'whoThisIsForText', title: 'Who this is for', type: 'string', group: 'content' },
     {
       name: 'representativeWork',
       title: 'Representative work',

@@ -36,8 +36,9 @@ export const servicePageSlugsQuery = groq`
 
 export const servicePageBySlugQuery = groq`
   *[_type == "servicePage" && slug.current == $slug][0]{
-    title, "slug": slug.current, heroText, progressionText, progressionPhases,
-    twoTrackCallout, engagementModelText, whoThisIsForText, representativeWork,
+    title, "slug": slug.current, heroText,
+    sections[]{ heading, body },
+    representativeWork,
     "testimonials": testimonials[]->${testimonialProjection},
     ctaLabel, ${seoFields}
   }
