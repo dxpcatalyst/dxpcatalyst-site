@@ -37,7 +37,7 @@ export async function generateMetadata({
   return buildMetadata({
     seo: page.seo,
     pageTitle: page.title || 'Framework',
-    path: `/frameworks/${params.slug}`,
+    path: `/framework/${params.slug}`,
   });
 }
 
