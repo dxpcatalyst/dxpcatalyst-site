@@ -14,11 +14,16 @@ export function FeedCard({ post }: { post: FeedPost }) {
   const dateLabel = formatDate(post.publishedAt);
   const inner = (
     <>
-      <div className="flex items-center gap-2 text-xs text-gray-500">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
         {dateLabel && <time>{dateLabel}</time>}
         <span className="rounded-full bg-gray-100 px-2 py-0.5 uppercase tracking-wide">
           {post.source === 'beehiiv' ? 'Newsletter' : 'Article'}
         </span>
+        {post.category && (
+          <span className="rounded-full bg-brand-tint px-2 py-0.5 font-medium uppercase tracking-wide text-brand">
+            {post.category}
+          </span>
+        )}
       </div>
       <h3 className="mt-2 text-lg font-semibold text-gray-900 group-hover:text-brand">
         {post.title}

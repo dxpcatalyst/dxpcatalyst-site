@@ -21,7 +21,7 @@ export function HubSpotMeetings({ meetingUrl }: { meetingUrl?: string }) {
       {!failed && (
         <>
           <Script
-            src="//static.hsappstatic.net/MeetingsEmbedCode/static-1.107/MeetingsEmbedCode.js"
+            src="https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js"
             strategy="afterInteractive"
             onError={() => setFailed(true)}
           />

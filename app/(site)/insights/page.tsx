@@ -3,7 +3,7 @@ import { sanityFetch } from '@/sanity/lib/fetch';
 import { insightsPageQuery, insightPostsQuery } from '@/sanity/lib/queries';
 import { buildMetadata } from '@/lib/seo';
 import { fetchBeehiivPosts, mergeFeeds, type FeedPost } from '@/lib/beehiiv';
-import { FeedCard } from '@/components/FeedCard';
+import { InsightsFeed } from '@/components/InsightsFeed';
 import { NewsletterCta } from '@/components/NewsletterCta';
 
 // ISR: refresh hourly to pick up new Beehiiv posts (spec §2).
@@ -40,6 +40,7 @@ export default async function InsightsPageRoute() {
       excerpt: p.summary || '',
       url: `/insights/${p.slug}`,
       source: 'sanity' as const,
+      category: p.tags?.[0] ?? null,
     }));
   }
 
@@ -57,11 +58,7 @@ export default async function InsightsPageRoute() {
 
       <section className="container-page pb-8">
         {feed.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {feed.map((post) => (
-              <FeedCard key={post.id} post={post} />
-            ))}
-          </div>
+          <InsightsFeed feed={feed} />
         ) : beehiivFetchFailed ? (
           // Static fallback card with a direct link to the newsletter (spec §2).
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">

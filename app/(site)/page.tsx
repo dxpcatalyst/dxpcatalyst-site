@@ -58,6 +58,7 @@ export default async function HomePageRoute() {
       excerpt: p.summary || '',
       url: `/insights/${p.slug}`,
       source: 'sanity' as const,
+      category: p.tags?.[0] ?? null,
     }));
   }
 

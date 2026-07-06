@@ -8,6 +8,7 @@ export type FeedPost = {
   excerpt: string;
   url: string;
   source: 'beehiiv' | 'sanity';
+  category: string | null; // Beehiiv content tag / category, or a Sanity tag.
 };
 
 // Fetch + parse the latest posts from a Beehiiv public subdomain.
@@ -57,24 +58,110 @@ function parseBeehiivHtml(html: string, baseUrl: string): FeedPost[] {
     return dedupeAndSort(posts);
   }
 
-  // 2) Fallback: scrape /p/ post links with their anchor text.
+  // 2) Fallback: scrape /p/ post links and pull date, category, and title out of
+  // the archive listing. Date and title live inside the post's anchor (a <time>
+  // and a heading); the category is a sibling chip that Beehiiv renders just
+  // *before* each card's anchors, so we match chips by position and attach the
+  // nearest one preceding each card. Parsing them separately keeps the card
+  // title from ending up glued to the date (e.g. "Jul 1, 2026Title").
+  const chips = findCategoryChips(html);
   const anchorRe = /<a[^>]+href=["']([^"']*\/p\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
   let m: RegExpExecArray | null;
   while ((m = anchorRe.exec(html)) !== null) {
     const url = absolutize(m[1], baseUrl);
-    const title = stripTags(m[2]).trim();
-    if (!title) continue;
+    const card = parseCard(m[2]);
+    if (!card.title) continue;
     posts.push({
       id: url,
-      title,
-      publishedAt: null,
-      excerpt: '',
+      title: card.title,
+      publishedAt: card.publishedAt,
+      excerpt: card.excerpt,
       url,
       source: 'beehiiv',
+      // Prefer a chip found inside the anchor; otherwise the nearest chip that
+      // appears before this card in the document.
+      category: card.category ?? nearestChipBefore(chips, m.index),
     });
   }
 
   return dedupeAndSort(posts);
+}
+
+type Chip = { pos: number; value: string };
+
+// Beehiiv renders each card's category as a small pill:
+//   <span class="whitespace-nowrap pb-1 text-xs font-medium">DXP Digest</span>
+// Match text-only spans carrying both the `whitespace-nowrap` and `font-medium`
+// utility classes (order-independent), which uniquely identifies these chips.
+function findCategoryChips(html: string): Chip[] {
+  const chips: Chip[] = [];
+  const re =
+    /<span[^>]*class=["'][^"']*\bwhitespace-nowrap\b[^"']*\bfont-medium\b[^"']*["'][^>]*>([^<]+)<\/span>/gi;
+  let c: RegExpExecArray | null;
+  while ((c = re.exec(html)) !== null) {
+    const value = clean(c[1]);
+    if (value) chips.push({ pos: c.index, value });
+  }
+  return chips;
+}
+
+function nearestChipBefore(chips: Chip[], pos: number): string | null {
+  let found: string | null = null;
+  for (const chip of chips) {
+    if (chip.pos < pos) found = chip.value;
+    else break;
+  }
+  return found;
+}
+
+// Extract date, category, and title from a single archive card's inner HTML.
+function parseCard(inner: string): {
+  title: string;
+  publishedAt: string | null;
+  category: string | null;
+  excerpt: string;
+} {
+  // Date: prefer a machine-readable <time datetime="…">, then <time> text.
+  let publishedAt: string | null = null;
+  const timeAttr = inner.match(/<time[^>]*\bdatetime=["']([^"']+)["']/i);
+  if (timeAttr) publishedAt = normalizeDate(timeAttr[1]);
+  if (!publishedAt) {
+    const timeText = inner.match(/<time[^>]*>([\s\S]*?)<\/time>/i);
+    if (timeText) publishedAt = normalizeDate(clean(timeText[1]));
+  }
+
+  // Category: an element flagged as a category/tag/badge, or a link into a
+  // /c/ or /t/ (category/tag) archive route.
+  let category: string | null = null;
+  const catByClass = inner.match(
+    /<(?:span|a|div|p)[^>]*class=["'][^"']*(?:categor|\btag\b|badge|pill|eyebrow|topic)[^"']*["'][^>]*>([\s\S]*?)<\/(?:span|a|div|p)>/i
+  );
+  if (catByClass) category = clean(catByClass[1]) || null;
+  if (!category) {
+    const catByHref = inner.match(
+      /<a[^>]*href=["'][^"']*\/(?:c|t|category|categories|tag|tags|topic|topics)\/[^"']*["'][^>]*>([\s\S]*?)<\/a>/i
+    );
+    if (catByHref) category = clean(catByHref[1]) || null;
+  }
+
+  // Title: prefer a heading element; otherwise use the leftover text.
+  let title = '';
+  const heading = inner.match(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/i);
+  if (heading) title = clean(heading[1]);
+  if (!title) title = clean(inner);
+
+  // Peel a leading date off the title (covers feeds that glue them together),
+  // and use it for the date if we didn't find a <time>.
+  const { date, rest } = stripLeadingDate(title);
+  if (rest) title = rest;
+  if (!publishedAt && date) publishedAt = normalizeDate(date);
+
+  // Drop a category label that leaked into the front of the title text.
+  if (category && title.toLowerCase().startsWith(category.toLowerCase())) {
+    title = title.slice(category.length).replace(/^[\s·•|:–—-]+/, '').trim();
+  }
+
+  return { title, publishedAt, category, excerpt: '' };
 }
 
 function collectFromLd(data: any, posts: FeedPost[]) {
@@ -98,13 +185,18 @@ function collectFromLd(data: any, posts: FeedPost[]) {
         ? data.url
         : data.mainEntityOfPage?.['@id'] || data.mainEntityOfPage;
     if (typeof url === 'string') {
+      const rawTitle = clean(data.headline || data.name || 'Untitled');
+      // Some feeds prefix the headline with the date; peel it off so the card
+      // can render date and title as separate elements.
+      const { date, rest } = stripLeadingDate(rawTitle);
       posts.push({
         id: url,
-        title: data.headline || data.name || 'Untitled',
-        publishedAt: data.datePublished || data.dateCreated || null,
-        excerpt: data.description || '',
+        title: rest || rawTitle,
+        publishedAt: data.datePublished || data.dateCreated || normalizeDate(date),
+        excerpt: clean(data.description || ''),
         url,
         source: 'beehiiv',
+        category: ldCategory(data),
       });
     }
   }
@@ -143,4 +235,54 @@ function absolutize(href: string, base: string): string {
 
 function stripTags(s: string): string {
   return s.replace(/<[^>]*>/g, '');
+}
+
+// Strip tags, decode common entities, and collapse whitespace.
+function clean(s: string | undefined | null): string {
+  if (!s) return '';
+  return decodeEntities(stripTags(s)).replace(/\s+/g, ' ').trim();
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;|&apos;|&#x27;/gi, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#8217;|&rsquo;/g, '’')
+    .replace(/&#8216;|&lsquo;/g, '‘');
+}
+
+// Detect and remove a date at the very start of a string. Handles formats like
+// "Jul 1, 2026", "July 01, 2026", "Jul 1 2026", optionally followed by a
+// separator (·, •, |, –, —, -, :). Returns the matched date text and the rest.
+const LEADING_DATE_RE =
+  /^\s*((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s+\d{4})\s*[·•|:–—-]*\s*/i;
+
+function stripLeadingDate(s: string): { date: string | null; rest: string } {
+  const m = s.match(LEADING_DATE_RE);
+  if (!m) return { date: null, rest: s };
+  return { date: m[1], rest: s.slice(m[0].length).trim() };
+}
+
+// Normalize a date string (ISO or human-readable) to an ISO string, or null.
+function normalizeDate(text: string | null | undefined): string | null {
+  if (!text) return null;
+  const t = text.trim();
+  if (!t) return null;
+  const ms = Date.parse(t);
+  return Number.isNaN(ms) ? null : new Date(ms).toISOString();
+}
+
+// Pull a category from JSON-LD (articleSection, or the first keyword).
+function ldCategory(data: any): string | null {
+  const section = data.articleSection;
+  if (typeof section === 'string' && section.trim()) return clean(section);
+  if (Array.isArray(section) && section.length) return clean(String(section[0]));
+  const kw = data.keywords;
+  if (typeof kw === 'string' && kw.trim()) return clean(kw.split(',')[0]);
+  if (Array.isArray(kw) && kw.length) return clean(String(kw[0]));
+  return null;
 }

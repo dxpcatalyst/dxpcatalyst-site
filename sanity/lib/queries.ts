@@ -52,7 +52,7 @@ export const insightsPageQuery = groq`
 
 export const insightPostsQuery = groq`
   *[_type == "insightPost" && defined(slug.current)] | order(publishedAt desc){
-    _id, title, "slug": slug.current, publishedAt, summary,
+    _id, title, "slug": slug.current, publishedAt, summary, tags,
     "author": author->name, featuredImage
   }
 `;
@@ -71,7 +71,9 @@ export const insightPostBySlugQuery = groq`
 
 export const contactPageQuery = groq`
   *[_type == "contactPage"][0]{
-    headline, introText, hubspotFormId, hubspotPortalId, email, phone, ${seoFields}
+    headline, introText, email, phone, address,
+    "meetingUrl": *[_type == "bookingPage"][0].hubspotMeetingUrl,
+    ${seoFields}
   }
 `;
 
