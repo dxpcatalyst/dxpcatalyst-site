@@ -12,6 +12,7 @@ type CaseStudy = {
   clientName?: string;
   clientType?: string;
   industry?: string;
+  facts?: { label?: string; value?: string }[];
   challenge?: any;
   whatWeDid?: any;
   outcome?: any;
@@ -69,6 +70,14 @@ export default async function CaseStudyRoute({ params }: { params: { slug: strin
               <dd>{cs.industry}</dd>
             </div>
           )}
+          {(cs.facts || [])
+            .filter((f) => f.label && f.value)
+            .map((f, i) => (
+              <div key={i}>
+                <dt className="font-medium text-gray-900">{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))}
         </dl>
 
         {cs.challenge && (

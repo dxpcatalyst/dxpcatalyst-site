@@ -125,6 +125,7 @@ export const caseStudySlugsQuery = groq`
 export const caseStudyBySlugQuery = groq`
   *[_type == "caseStudy" && slug.current == $slug][0]{
     title, "slug": slug.current, clientName, clientType, industry,
+    facts[]{ label, value },
     challenge, whatWeDid, outcome, isAnonymized,
     "relatedOfferingTitle": relatedOffering->title,
     "relatedOfferingSlug": relatedOffering->slug.current,

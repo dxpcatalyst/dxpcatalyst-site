@@ -31,6 +31,23 @@ export const caseStudy = defineType({
     },
     { name: 'clientType', title: 'Client type', type: 'string', description: "e.g. 'PE-backed EdTech', 'Growth-stage financial services'.", group: 'content' },
     { name: 'industry', title: 'Industry', type: 'string', group: 'content' },
+    {
+      name: 'facts',
+      title: 'At a glance',
+      type: 'array',
+      group: 'content',
+      description: 'Quick engagement facts shown as a meta strip (e.g. Engagement, Location, Company size, Project type).',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'label', title: 'Label', type: 'string' },
+            { name: 'value', title: 'Value', type: 'string' },
+          ],
+          preview: { select: { title: 'label', subtitle: 'value' } },
+        },
+      ],
+    },
     { name: 'publishedAt', title: 'Published at', type: 'datetime', group: 'content' },
     {
       name: 'relatedOffering',
