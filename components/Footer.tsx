@@ -13,7 +13,8 @@ type FooterSettings = {
 const FOOTER_LINKS = [
   { label: 'About', href: '/about' },
   { label: 'DXP Advisory', href: '/services/dxp-advisory' },
-  { label: 'HubSpot & Salesforce', href: '/services/hubspot-salesforce' },
+  { label: 'HubSpot & Salesforce Advisory', href: '/services/hubspot-salesforce' },
+  { label: 'Digital Blueprint Design', href: '/framework/digital-blueprint-design' },
   { label: 'Work', href: '/work' },
   { label: 'Insights', href: '/insights' },
   { label: 'Contact', href: '/contact' },

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { sanityFetch } from '@/sanity/lib/fetch';
 import { frameworkPageBySlugQuery, frameworkPageSlugsQuery } from '@/sanity/lib/queries';
@@ -49,17 +50,36 @@ export default async function FrameworkPageRoute({ params }: { params: { slug: s
   });
   if (!page) notFound();
 
+  const showIllustration = params.slug === 'digital-blueprint-design';
+
   return (
     <>
       {/* Hero / intro */}
       <section className="bg-gradient-to-b from-gray-50 to-white">
         <div className="container-page py-16">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">{page.title}</h1>
-          {page.intro && (
-            <div className="mt-4 max-w-3xl text-lg">
-              <PortableText value={page.intro} />
+          <div className={showIllustration ? 'grid items-center gap-10 md:grid-cols-2' : ''}>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900">{page.title}</h1>
+              {page.intro && (
+                <div className={`mt-4 text-lg ${showIllustration ? '' : 'max-w-3xl'}`}>
+                  <PortableText value={page.intro} />
+                </div>
+              )}
             </div>
-          )}
+            {showIllustration && (
+              <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+                <Image
+                  src="/digital-blueprint-design.png"
+                  alt="Isometric blueprint illustration representing the Digital Blueprint Design framework"
+                  width={1536}
+                  height={1024}
+                  priority
+                  className="h-auto w-full"
+                  sizes="(max-width: 768px) 100vw, 512px"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
