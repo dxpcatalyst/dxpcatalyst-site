@@ -69,10 +69,10 @@ export default async function FrameworkPageRoute({ params }: { params: { slug: s
             {showIllustration && (
               <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
                 <Image
-                  src="/digital-blueprint-design.png"
+                  src="/digital-blueprint-design.jpg"
                   alt="Isometric blueprint illustration representing the Digital Blueprint Design framework"
-                  width={1536}
-                  height={1024}
+                  width={1280}
+                  height={853}
                   priority
                   className="h-auto w-full"
                   sizes="(max-width: 768px) 100vw, 512px"

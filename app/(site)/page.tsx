@@ -54,8 +54,47 @@ export default async function HomePageRoute() {
   return (
     <>
       {/* Hero — dark navy (design tokens §1) */}
-      <section className="bg-brand-navy">
-        <div className="container-page py-20 text-center md:py-28">
+      <section className="relative overflow-hidden bg-brand-navy">
+        {/* Decorative blueprint motif — inline SVG, aria-hidden, negligible weight */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          preserveAspectRatio="xMidYMid slice"
+          viewBox="0 0 1440 640"
+          fill="none"
+        >
+          <defs>
+            <pattern id="hero-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+              <path d="M48 0H0V48" stroke="#285197" strokeWidth="1" />
+            </pattern>
+            <radialGradient id="hero-fade" cx="50%" cy="45%" r="75%">
+              <stop offset="0%" stopColor="#1A1F2E" stopOpacity="0.9" />
+              <stop offset="55%" stopColor="#1A1F2E" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#1A1F2E" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          {/* faint blueprint grid */}
+          <rect width="1440" height="640" fill="url(#hero-grid)" opacity="0.14" />
+          {/* vignette keeps the headline crisp, motif concentrated at the edges */}
+          <rect width="1440" height="640" fill="url(#hero-fade)" />
+          {/* right-side isometric node cluster (hidden on small screens) */}
+          <g className="hidden md:block" opacity="0.55">
+            <g stroke="#4C7AC4" strokeWidth="1.5">
+              <path d="M1180 205 L1250 170 L1320 205 L1320 280 L1250 315 L1180 280 Z" />
+              <path d="M1180 205 L1250 240 L1320 205" />
+              <path d="M1250 240 L1250 315" />
+              <path d="M1250 315 L1250 398 L1122 440" strokeDasharray="4 7" />
+              <path d="M1320 280 L1392 316" strokeDasharray="4 7" />
+            </g>
+            <g fill="#4C7AC4">
+              <circle cx="1250" cy="170" r="3" />
+              <circle cx="1250" cy="398" r="4" />
+              <circle cx="1122" cy="440" r="4" />
+              <circle cx="1392" cy="316" r="4" />
+            </g>
+          </g>
+        </svg>
+        <div className="container-page relative py-20 text-center md:py-28">
           <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-white md:text-5xl">
             {home.heroHeadline || 'Modernize your digital ecosystem'}
           </h1>
