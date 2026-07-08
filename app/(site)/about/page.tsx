@@ -62,7 +62,7 @@ export default async function AboutPageRoute() {
       {about.differentiators && about.differentiators.length > 0 && (
         <section className="container-page py-16">
           <h2 className="text-2xl font-semibold text-gray-900">Why work with us</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
             {about.differentiators.map((d, i) => (
               <div key={i} className="rounded-lg border border-gray-200 p-6">
                 <h3 className="font-semibold text-gray-900">{d.title}</h3>
