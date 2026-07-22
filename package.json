@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@next/third-parties": "^14.2.35",
     "@portabletext/react": "^3.1.0",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.57.4",

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/react';
 import { HubSpotTracking } from '@/components/HubSpotTracking';
+import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { Ai12zWidget } from '@/components/Ai12zWidget';
 import { gilroy } from '@/lib/fonts';
 import { SITE_NAME, SITE_URL } from '@/lib/seo';
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <HubSpotTracking />
         <Ai12zWidget />
         <Analytics />
+        <GoogleAnalytics />
       </body>
     </html>
   );
