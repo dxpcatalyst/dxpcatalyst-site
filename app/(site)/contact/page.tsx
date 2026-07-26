@@ -71,7 +71,7 @@ export default async function ContactPageRoute() {
           {page.address ? (
             <>
               <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                Visit us
+                Based in New York
               </h2>
               <address className="mt-2 not-italic text-gray-700">{page.address}</address>
               <div className="mt-4 overflow-hidden rounded-lg border border-gray-200">
