@@ -57,7 +57,7 @@ export default function OpengraphImage() {
               letterSpacing: -1,
             }}
           >
-            Vendor-neutral DXP &amp; MarTech advisory
+            Vendor-neutral DXP and MarTech advisory
           </div>
           <div style={{ color: '#C3CEDE', fontSize: 33, marginTop: 28, lineHeight: 1.3 }}>
             Platform selection and architecture for organizations modernizing their digital ecosystem.

@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function offeringTag(slug?: string): string | null {
   if (slug === 'dxp-advisory') return 'DXP Advisory';
-  if (slug === 'hubspot-salesforce') return 'HubSpot & Salesforce';
+  if (slug === 'hubspot-salesforce') return 'HubSpot and Salesforce';
   return null;
 }
 
