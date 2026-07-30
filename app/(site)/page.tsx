@@ -9,6 +9,11 @@ import { NewsletterCta } from '@/components/NewsletterCta';
 import { FeedCard } from '@/components/FeedCard';
 import type { FeedPost } from '@/lib/beehiiv';
 
+// Regenerate hourly so the "Latest insights" preview picks up new posts,
+// matching the Insights page. Without this the homepage is fully static and
+// only refreshes on redeploy.
+export const revalidate = 3600;
+
 type HomePage = {
   heroHeadline?: string;
   heroSubheadline?: string;
