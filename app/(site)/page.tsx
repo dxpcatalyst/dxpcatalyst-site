@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { sanityFetch } from '@/sanity/lib/fetch';
-import { homePageQuery, insightPostsQuery, serviceOfferingsQuery } from '@/sanity/lib/queries';
+import { homePageQuery, insightPostsQuery, insightsPageQuery, serviceOfferingsQuery } from '@/sanity/lib/queries';
 import { buildMetadata } from '@/lib/seo';
 import { PortableText } from '@/components/PortableText';
 import { Testimonials, type Testimonial } from '@/components/Testimonials';
 import { NewsletterCta } from '@/components/NewsletterCta';
 import { FeedCard } from '@/components/FeedCard';
-import type { FeedPost } from '@/lib/beehiiv';
+import { fetchBeehiivPosts, mergeFeeds, type FeedPost } from '@/lib/beehiiv';
 
 // Regenerate hourly so the "Latest insights" preview picks up new posts,
 // matching the Insights page. Without this the homepage is fully static and
@@ -44,16 +44,31 @@ export default async function HomePageRoute() {
 
   let previewPosts: FeedPost[] = [];
   if (home.showInsightsPreview) {
-    const sanityPosts = await sanityFetch<any[]>({ query: insightPostsQuery, tags: ['insightPost'] });
-    previewPosts = (sanityPosts || []).slice(0, 3).map((p) => ({
-      id: p._id,
-      title: p.title,
-      publishedAt: p.publishedAt ?? null,
-      excerpt: p.summary || '',
-      url: `/insights/${p.slug}`,
-      source: 'sanity' as const,
-      category: p.tags?.[0] ?? null,
-    }));
+    // Mirror the Insights page: merge the live Beehiiv feed with Sanity-authored
+    // posts so the newest newsletter issues surface here too, then take the most
+    // recent 3. Querying only Sanity posts (as before) missed Beehiiv issues.
+    const insightsPage = await sanityFetch<{
+      beehiivSubdomainUrl?: string;
+      showSanityPosts?: boolean;
+    }>({ query: insightsPageQuery, tags: ['insightsPage'] });
+
+    const beehiivPosts = await fetchBeehiivPosts(insightsPage?.beehiivSubdomainUrl);
+
+    let sanityFeed: FeedPost[] = [];
+    if (insightsPage?.showSanityPosts !== false) {
+      const sanityPosts = await sanityFetch<any[]>({ query: insightPostsQuery, tags: ['insightPost'] });
+      sanityFeed = (sanityPosts || []).map((p) => ({
+        id: p._id,
+        title: p.title,
+        publishedAt: p.publishedAt ?? null,
+        excerpt: p.summary || '',
+        url: `/insights/${p.slug}`,
+        source: 'sanity' as const,
+        category: p.tags?.[0] ?? null,
+      }));
+    }
+
+    previewPosts = mergeFeeds(beehiivPosts, sanityFeed).slice(0, 3);
   }
 
   return (
