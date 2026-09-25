@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/next';
 import { HubSpotTracking } from '@/components/HubSpotTracking';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { Ai12zWidget } from '@/components/Ai12zWidget';
